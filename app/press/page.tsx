@@ -1,18 +1,27 @@
-import type { Metadata } from 'next';
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import { artist } from '@/data/artist';
 import { currentRelease } from '@/data/releases';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { generatePageMetadata } from '@/lib/metadata';
 
-export const metadata: Metadata = generatePageMetadata({
-  title: 'Basın & Medya Kiti (EPK)',
-  description:
-    'Kayıp Serotonin resmi basın bülteni, yüksek çözünürlüklü görseller, logo paketi ve röportaj materyalleri.',
-  path: '/press',
-});
+const brandColors = [
+  { hex: '#0D0B0B', name: 'Gece Karası', use: 'Arka Plan', textColor: 'text-white' },
+  { hex: '#EDE5DB', name: 'Kemik Beyazı', use: 'Ana Tipografi', textColor: 'text-black' },
+  { hex: '#A35252', name: 'Kayıp Bordo', use: 'Vurgu / Accent', textColor: 'text-white' },
+  { hex: '#1C1717', name: 'Karanlık Yüzey', use: 'Kart Zeminleri', textColor: 'text-white' },
+];
 
 export default function PressPage() {
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
+
+  const copyToClipboard = (hex: string) => {
+    navigator.clipboard.writeText(hex);
+    setCopiedHex(hex);
+    setTimeout(() => setCopiedHex(null), 2000);
+  };
+
   return (
     <div className="pt-32 pb-24">
       <JsonLd type="website" pagePath="/press" pageTitle="Basın Kiti" />
@@ -30,7 +39,7 @@ export default function PressPage() {
             Basın Kiti
           </h1>
           <p className="text-base max-w-[60ch]" style={{ color: 'var(--ks-muted)' }}>
-            Medya mensupları, müzik yazarları, radyo programcıları ve çalma listesi (playlist) küratörleri için resmi materyal arşivi.
+            Yapay zeka ses teknolojileri ve insan duygusunu harmanlayan Kayıp Serotonin projesinin resmi basın, görsel ve medya materyalleri.
           </p>
         </div>
       </div>
@@ -49,7 +58,7 @@ export default function PressPage() {
                 Basın Bülteni Metni (Kopyalanabilir)
               </span>
               <p className="text-base leading-relaxed" style={{ color: 'var(--ks-fg)', fontFamily: 'var(--ks-font-ui)' }}>
-                &ldquo;Kayıp Serotonin, Berkay Ay ve Halim Parlak tarafından kurulan bağımsız bir müzik projesidir. Teknoloji ile insan duygusu arasındaki çizgide; kalp kırıklıklarını, ayrılık acılarını ve içsel melankoliyi çağdaş alternatif ses evrenine dönüştürür. İlk single çalışmaları &lsquo;Sınırları Aştın&rsquo; tüm dijital müzik platformlarında yayındadır.&rdquo;
+                &ldquo;Kayıp Serotonin, Berkay Ay ve Halim Parlak tarafından kurulan yeni nesil bağımsız bir yapay zeka müzik projesidir. İleri düzey yapay zeka ses üretim teknolojilerini saf insan duygusu ve aşk acılarıyla harmanlayarak dinleyicide derin izler bırakan melankolik bir evren yaratır. İlk single çalışmaları &lsquo;Sınırları Aştın&rsquo; tüm dijital platformlarda yayındadır.&rdquo;
               </p>
             </div>
 
@@ -60,8 +69,8 @@ export default function PressPage() {
                 <span className="text-sm font-medium" style={{ color: 'var(--ks-fg)' }}>Berkay Ay &amp; Halim Parlak</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-label" style={{ color: 'var(--ks-subtle)' }}>Tür</span>
-                <span className="text-sm font-medium" style={{ color: 'var(--ks-fg)' }}>Türkçe Alternatif / Indie</span>
+                <span className="text-label" style={{ color: 'var(--ks-subtle)' }}>Üretim Yaklaşımı</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--ks-fg)' }}>Yapay Zeka Destekli &amp; Melankolik</span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-label" style={{ color: 'var(--ks-subtle)' }}>İlk Single</span>
@@ -143,30 +152,42 @@ export default function PressPage() {
           </div>
         </div>
 
-        {/* Section 3: Brand Identity & Palette */}
+        {/* Section 3: Brand Identity & Interactive Palette */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pt-12 border-t border-[var(--ks-border)]">
-          <div className="md:col-span-4">
+          <div className="md:col-span-4 flex flex-col gap-2">
             <span className="text-label" style={{ color: 'var(--ks-accent)' }}>
               03 // Renk Paleti
             </span>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--ks-subtle)' }}>
+              Görsel tasarımcılar, afiş hazırlayanlar ve medya editörleri için resmi HEX kodları. Koda tıklayarak anında kopyalayabilirsiniz.
+            </p>
           </div>
           <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-4 border border-[var(--ks-border)] bg-[#0d0b0b] flex flex-col justify-end h-28">
-              <span className="text-xs font-mono font-bold text-white">#0D0B0B</span>
-              <span className="text-[0.6875rem] text-white/60">Gece Karası (Zemin)</span>
-            </div>
-            <div className="p-4 border border-[var(--ks-border)] bg-[#ede5db] flex flex-col justify-end h-28">
-              <span className="text-xs font-mono font-bold text-black">#EDE5DB</span>
-              <span className="text-[0.6875rem] text-black/60">Kemik Beyazı (Yazı)</span>
-            </div>
-            <div className="p-4 border border-[var(--ks-border)] bg-[#a35252] flex flex-col justify-end h-28">
-              <span className="text-xs font-mono font-bold text-white">#A35252</span>
-              <span className="text-[0.6875rem] text-white/80">Vurgu / Bordo</span>
-            </div>
-            <div className="p-4 border border-[var(--ks-border)] bg-[#1c1717] flex flex-col justify-end h-28">
-              <span className="text-xs font-mono font-bold text-white">#1C1717</span>
-              <span className="text-[0.6875rem] text-white/60">Yüzey (Surface)</span>
-            </div>
+            {brandColors.map((color) => {
+              const isCopied = copiedHex === color.hex;
+              return (
+                <button
+                  key={color.hex}
+                  type="button"
+                  onClick={() => copyToClipboard(color.hex)}
+                  className="p-4 border border-[var(--ks-border)] flex flex-col justify-between h-32 text-left transition-transform hover:scale-105 cursor-pointer rounded-sm group relative"
+                  style={{ backgroundColor: color.hex }}
+                  title={`${color.hex} kodunu kopyalamak için tıkla`}
+                >
+                  <span className="text-[0.625rem] uppercase tracking-wider font-mono opacity-80" style={{ color: color.textColor === 'text-white' ? '#fff' : '#000' }}>
+                    {isCopied ? '✓ KOPYALANDI!' : 'KOPYALA'}
+                  </span>
+                  <div>
+                    <span className="text-xs font-mono font-bold block" style={{ color: color.textColor === 'text-white' ? '#fff' : '#000' }}>
+                      {color.hex}
+                    </span>
+                    <span className="text-[0.6875rem] opacity-75 block" style={{ color: color.textColor === 'text-white' ? '#fff' : '#000' }}>
+                      {color.name}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -177,14 +198,14 @@ export default function PressPage() {
               Röportaj &amp; Çalma Listesi İletişimi
             </h3>
             <p className="text-xs max-w-md m-0" style={{ color: 'var(--ks-muted)' }}>
-              Röportaj talepleri, playlist eklemeleri ve basın bülteni gönderimleri için resmi iletişim kanalımız.
+              Yapay zeka müzik üretimi, röportaj talepleri ve playlist eklemeleri için doğrudan resmi e-posta adresimiz.
             </p>
           </div>
           <a
-            href="mailto:iletisim@kayipserotonin.com.tr"
+            href="mailto:kayipserotonin@gmail.com"
             className="ks-btn ks-btn-primary text-xs shrink-0"
           >
-            <span>iletisim@kayipserotonin.com.tr</span>
+            <span>kayipserotonin@gmail.com</span>
             <span>✉</span>
           </a>
         </div>

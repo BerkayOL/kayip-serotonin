@@ -49,6 +49,7 @@ export interface ArtistInfo {
   description: string;
   philosophy?: string;
   members: string[];
+  email: string;
   logo: string;
   logoAlt: string;
   social: SocialLinks;

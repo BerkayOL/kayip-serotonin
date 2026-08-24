@@ -2,12 +2,13 @@ import type { ArtistInfo } from '@/types';
 
 export const artist: ArtistInfo = {
   name: 'Kayıp Serotonin',
-  tagline: 'Bağımsız Müzik Projesi',
+  tagline: 'Yapay Zeka Müzik Projesi',
   description:
-    'Kayıp Serotonin, Berkay Ay ve Halim Parlak tarafından temelleri atılan bağımsız bir müzik projesidir. Teknoloji ile insan duygusu arasındaki ince çizgide, kalpte kalan izleri ve aşk acılarını melankolik bir ses evrenine dönüştürür.',
+    'Kayıp Serotonin, Berkay Ay ve Halim Parlak tarafından temelleri atılan yeni nesil yapay zeka müzik projesidir. İleri düzey ses üretim teknolojileri ile saf insan duygusunu bir araya getirerek, kalpte kalan izleri ve aşk acılarını melankolik bir ses evrenine dönüştürür.',
   philosophy:
-    'Müzik, içimizde kaybolan hislerin peşine düşmek ve yarım kalmış duyguları sesle somutlaştırmaktır.',
+    'Müzik, yapay zeka ile insan hislerinin kesiştiği yerde kaybolan duyguların peşine düşmektir.',
   members: ['Berkay Ay', 'Halim Parlak'],
+  email: 'kayipserotonin@gmail.com',
   logo: '/images/logo.png',
   logoAlt: 'Kayıp Serotonin — Serotonin molekülü ve dairesel ark logosu',
   social: {

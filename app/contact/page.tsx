@@ -5,7 +5,7 @@ import { generatePageMetadata } from '@/lib/metadata';
 export const metadata: Metadata = generatePageMetadata({
   title: 'İletişim & İş Birliği',
   description:
-    'Kayıp Serotonin resmi iletişim, menajerlik, lisanslama, prodüksiyon ve remix iş birliği kanalları.',
+    'Kayıp Serotonin resmi iletişim, yapay zeka müzik prodüksiyonu, lisanslama, dizi/film müzikleri ve medya iş birliği kanalları.',
   path: '/contact',
 });
 
@@ -27,7 +27,7 @@ export default function ContactPage() {
             İletişim
           </h1>
           <p className="text-base max-w-[60ch]" style={{ color: 'var(--ks-muted)' }}>
-            Prodüksiyon, ortak projeler, etkinlikler ve lisanslama için doğrudan bizimle iletişime geçin.
+            Yapay zeka destekli müzik prodüksiyonları, dizi/film soundtrack lisanslamaları ve medya iletişimi için doğrudan bizimle iletişime geçin.
           </p>
         </div>
       </div>
@@ -41,11 +41,11 @@ export default function ContactPage() {
                 Doğrudan E-Posta
               </span>
               <a
-                href="mailto:iletisim@kayipserotonin.com.tr"
+                href="mailto:kayipserotonin@gmail.com"
                 className="text-xl md:text-2xl font-medium hover:underline break-all"
                 style={{ color: 'var(--ks-fg)', fontFamily: 'var(--ks-font-display)' }}
               >
-                iletisim@kayipserotonin.com.tr
+                kayipserotonin@gmail.com
               </a>
               <span className="text-xs" style={{ color: 'var(--ks-subtle)' }}>
                 Tüm resmi taleplere en geç 48 saat içinde dönüş yapılır.
@@ -56,20 +56,24 @@ export default function ContactPage() {
 
             <div className="flex flex-col gap-4">
               <span className="text-label" style={{ color: 'var(--ks-subtle)' }}>
-                Konu Başlıkları
+                Çalışma Alanlarımız
               </span>
               <ul className="list-none m-0 p-0 flex flex-col gap-3 text-sm" style={{ color: 'var(--ks-muted)' }}>
                 <li className="flex items-center gap-2">
                   <span style={{ color: 'var(--ks-accent)' }}>●</span>
-                  <span>Müzikal İş Birlikleri &amp; Feat Talepleri</span>
+                  <span>Yapay Zeka Müzik Prodüksiyonu &amp; Ses Tasarımı</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span style={{ color: 'var(--ks-accent)' }}>●</span>
-                  <span>Dizi, Film ve Dijital Proje Müzik Lisanslamaları</span>
+                  <span>Dizi, Film, Oyun ve Reklam Müzik Lisanslamaları</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span style={{ color: 'var(--ks-accent)' }}>●</span>
-                  <span>Basın Röportajları &amp; Canlı Yayın Davetleri</span>
+                  <span>Özel Melankolik Kompozisyon ve Soundtrack Üretimi</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span style={{ color: 'var(--ks-accent)' }}>●</span>
+                  <span>Basın Röportajları &amp; Teknoloji/Müzik Sohbetleri</span>
                 </li>
               </ul>
             </div>
@@ -79,7 +83,7 @@ export default function ContactPage() {
           <div className="md:col-span-7 p-8 md:p-12 border border-[var(--ks-border-strong)] bg-[var(--ks-surface)] flex flex-col justify-between gap-8">
             <div className="flex flex-col gap-4">
               <span className="text-label" style={{ color: 'var(--ks-accent)' }}>
-                Kayıp Serotonin Studio
+                Kayıp Serotonin AI Audio Studio
               </span>
               <h2
                 className="text-display-md"
@@ -88,12 +92,12 @@ export default function ContactPage() {
                 Birlikte Üretelim.
               </h2>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--ks-muted)' }}>
-                Projeniz için orijinal soundtrack, vokalli alternatif kompozisyonlar veya remix çalışmaları hakkında konuşmak isterseniz bize bir mesaj bırakın.
+                Projeniz için orijinal yapay zeka destekli soundtrack, duygu yüklü alternatif müzik kompozisyonları veya lisanslama hakkında konuşmak isterseniz bize bir mesaj gönderin.
               </p>
             </div>
 
             <a
-              href="mailto:iletisim@kayipserotonin.com.tr?subject=Proje%20İş%20Birliği%20Talebi"
+              href="mailto:kayipserotonin@gmail.com?subject=Proje%20İş%20Birliği%20Talebi"
               className="ks-btn ks-btn-primary w-fit"
             >
               <span>E-Posta Gönder</span>
