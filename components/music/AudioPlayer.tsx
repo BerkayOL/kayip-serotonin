@@ -1,0 +1,228 @@
+'use client';
+
+import { useState, useRef, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { currentRelease } from '@/data/releases';
+
+export function AudioPlayer() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const audioSrc = currentRelease.audioPreview;
+
+  const togglePlay = useCallback(() => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(() => {
+        // Handle autoplay policy restriction
+      });
+    }
+  }, [isPlaying]);
+
+  // Listen to global custom events (e.g. from Hero or Release cards)
+  useEffect(() => {
+    const handleTriggerPlay = () => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {});
+      }
+    };
+    window.addEventListener('ks-play-audio', handleTriggerPlay);
+    return () => window.removeEventListener('ks-play-audio', handleTriggerPlay);
+  }, []);
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return '0:00';
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  if (!audioSrc) return null;
+
+  return (
+    <>
+      <audio
+        ref={audioRef}
+        src={audioSrc}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => setIsPlaying(false)}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        preload="metadata"
+      />
+
+      {/* Floating Bottom Music Bar */}
+      <aside
+        aria-label="Ses Oynatıcısı"
+        className={[
+          'fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-2xl transition-all duration-300',
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none',
+        ].join(' ')}
+      >
+        <div
+          className="flex flex-col gap-2 p-3.5 sm:p-4 rounded border backdrop-blur-md shadow-2xl transition-colors duration-200"
+          style={{
+            background: 'rgba(13, 11, 11, 0.90)',
+            borderColor: isPlaying ? 'var(--ks-accent)' : 'var(--ks-border-strong)',
+          }}
+        >
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
+            {/* Artwork & Info */}
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 overflow-hidden rounded-sm border"
+                style={{ borderColor: 'var(--ks-border)' }}
+              >
+                {currentRelease.artwork && (
+                  <Image
+                    src={currentRelease.artwork}
+                    alt={currentRelease.title}
+                    fill
+                    sizes="44px"
+                    className="object-cover"
+                  />
+                )}
+                {isPlaying && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-0.5">
+                    <span className="w-0.5 h-3 bg-[var(--ks-accent)] animate-pulse" />
+                    <span className="w-0.5 h-4 bg-[var(--ks-fg)] animate-pulse delay-75" />
+                    <span className="w-0.5 h-2 bg-[var(--ks-accent)] animate-pulse delay-150" />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col min-w-0">
+                <span
+                  className="text-sm font-medium truncate"
+                  style={{ color: 'var(--ks-fg)', fontFamily: 'var(--ks-font-ui)' }}
+                >
+                  {currentRelease.title}
+                </span>
+                <span className="text-xs truncate" style={{ color: 'var(--ks-subtle)' }}>
+                  Kayıp Serotonin — Önizleme
+                </span>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              {/* Play/Pause Button */}
+              <button
+                type="button"
+                onClick={togglePlay}
+                aria-label={isPlaying ? 'Durdur' : 'Çal'}
+                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)]"
+                style={{
+                  background: 'var(--ks-fg)',
+                  color: 'var(--ks-bg)',
+                }}
+              >
+                {isPlaying ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="6" y="4" width="4" height="16" rx="1" />
+                    <rect x="14" y="4" width="4" height="16" rx="1" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-0.5" aria-hidden="true">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Mute Button */}
+              <button
+                type="button"
+                onClick={toggleMute}
+                aria-label={isMuted ? 'Sesi Aç' : 'Sessize Al'}
+                className="p-2 transition-colors duration-200 hidden sm:block focus-visible:outline-[var(--ks-accent)]"
+                style={{ color: isMuted ? 'var(--ks-accent)' : 'var(--ks-muted)' }}
+              >
+                {isMuted ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0a7 7 0 0 1-.11 1.23" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Dismiss button */}
+              <button
+                type="button"
+                onClick={() => setIsVisible(false)}
+                aria-label="Oynatıcıyı Gizle"
+                className="p-2 transition-colors duration-200 hover:text-[var(--ks-fg)] focus-visible:outline-[var(--ks-accent)]"
+                style={{ color: 'var(--ks-subtle)' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Progress Bar & Timestamps */}
+          <div className="flex items-center gap-3 pt-1">
+            <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
+              {formatTime(currentTime)}
+            </span>
+            <div className="relative flex-1 flex items-center">
+              <input
+                type="range"
+                min="0"
+                max={duration || 100}
+                value={currentTime}
+                onChange={handleSeek}
+                aria-label="Müzik Konumu"
+                className="w-full h-1 bg-[var(--ks-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--ks-accent)] focus-visible:outline-[var(--ks-accent)]"
+              />
+            </div>
+            <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
+              {formatTime(duration)}
+            </span>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}

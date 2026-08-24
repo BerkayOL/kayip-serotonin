@@ -1,26 +1,344 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────
+   KAYIP SEROTONİN — Design Tokens
+   Extracted from brand identity:
+   - Logo background: near-black #0d0b0b
+   - Logo lines (cream): #e8ddd0
+   - Logo accent (burgundy): #8b4040
+   ───────────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Background */
+  --ks-bg:              #0d0b0b;
+  --ks-surface:         #141010;
+  --ks-surface-raised:  #1c1717;
+
+  /* Foreground */
+  --ks-fg:              #ede5db;
+  --ks-muted:           rgba(232, 221, 208, 0.72);
+  --ks-subtle:          rgba(232, 221, 208, 0.48);
+
+  /* Border */
+  --ks-border:          rgba(232, 221, 208, 0.14);
+  --ks-border-strong:   rgba(232, 221, 208, 0.30);
+
+  /* Accent — from logo burgundy */
+  --ks-accent:          #a35252;
+  --ks-accent-muted:    rgba(163, 82, 82, 0.18);
+  --ks-accent-fg:       #e8ddd0;
+
+  /* Typography */
+  --ks-font-display:    var(--font-dm-serif), 'Georgia', serif;
+  --ks-font-ui:         var(--font-dm-sans), system-ui, sans-serif;
+
+  /* Spacing scale */
+  --ks-space-xs:   0.25rem;
+  --ks-space-sm:   0.5rem;
+  --ks-space-md:   1rem;
+  --ks-space-lg:   2rem;
+  --ks-space-xl:   4rem;
+  --ks-space-2xl:  6rem;
+  --ks-space-3xl:  10rem;
+
+  /* Section rhythm */
+  --ks-section-py: clamp(4rem, 8vw, 8rem);
+
+  /* Content max-width */
+  --ks-content-max:  1400px;
+  --ks-content-px:   clamp(1.25rem, 4vw, 4rem);
+
+  /* Transitions */
+  --ks-ease:        cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ks-ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ks-duration:    260ms;
+  --ks-duration-lg: 500ms;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   Tailwind v4 Theme Extension
+   ───────────────────────────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ks-bg:            var(--ks-bg);
+  --color-ks-surface:       var(--ks-surface);
+  --color-ks-surface-raised: var(--ks-surface-raised);
+  --color-ks-fg:            var(--ks-fg);
+  --color-ks-muted:         var(--ks-muted);
+  --color-ks-subtle:        var(--ks-subtle);
+  --color-ks-border:        var(--ks-border);
+  --color-ks-border-strong: var(--ks-border-strong);
+  --color-ks-accent:        var(--ks-accent);
+  --color-ks-accent-muted:  var(--ks-accent-muted);
+  --color-ks-accent-fg:     var(--ks-accent-fg);
+
+  --font-display: var(--ks-font-display);
+  --font-ui:      var(--ks-font-ui);
+  --font-sans:    var(--font-dm-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─────────────────────────────────────────────────────────────────
+   Base Reset & Globals
+   ───────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--ks-bg);
+  color: var(--ks-fg);
+  font-family: var(--ks-font-ui);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--ks-bg);
+  color: var(--ks-fg);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Typography Foundations
+   ───────────────────────────────────────────────────────────────── */
+
+/* Display — DM Serif Display */
+.font-display {
+  font-family: var(--ks-font-display);
+}
+
+/* UI / Body — DM Sans */
+.font-ui {
+  font-family: var(--ks-font-ui);
+}
+
+/* Display scale — fluid */
+.text-display-xl {
+  font-size: clamp(3.5rem, 10vw, 9rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  font-family: var(--ks-font-display);
+  font-weight: 400;
+}
+
+.text-display-lg {
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  font-family: var(--ks-font-display);
+  font-weight: 400;
+}
+
+.text-display-md {
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-family: var(--ks-font-display);
+  font-weight: 400;
+}
+
+/* Metadata / label scale */
+.text-label {
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-family: var(--ks-font-ui);
+}
+
+.text-meta {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-family: var(--ks-font-ui);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Focus & Accessibility
+   ───────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ks-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--ks-accent);
+  color: var(--ks-accent-fg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  transition: top var(--ks-duration) var(--ks-ease);
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Reduced Motion
+   ───────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Layout Utilities
+   ───────────────────────────────────────────────────────────────── */
+.ks-container {
+  width: 100%;
+  max-width: var(--ks-content-max);
+  margin-inline: auto;
+  padding-inline: var(--ks-content-px);
+}
+
+.ks-section {
+  padding-block: var(--ks-section-py);
+}
+
+/* Horizontal rule — design element */
+.ks-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--ks-border);
+}
+
+.ks-rule-strong {
+  background: var(--ks-border-strong);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Button Primitives
+   ───────────────────────────────────────────────────────────────── */
+.ks-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--ks-font-ui);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--ks-duration) var(--ks-ease);
+}
+
+.ks-btn-outline {
+  background: transparent;
+  color: var(--ks-fg);
+  border: 1px solid var(--ks-border-strong);
+}
+
+.ks-btn-outline:hover {
+  background: var(--ks-fg);
+  color: #0d0b0b !important;
+  border-color: var(--ks-fg);
+}
+
+.ks-btn-outline:hover * {
+  color: #0d0b0b !important;
+}
+
+.ks-btn-primary {
+  background: var(--ks-fg);
+  color: #0d0b0b;
+  border: 1px solid var(--ks-fg);
+}
+
+.ks-btn-primary:hover {
+  background: transparent;
+  color: var(--ks-fg) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Entrance Animations
+   ───────────────────────────────────────────────────────────────── */
+@keyframes ks-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ks-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ks-line-in {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.animate-fade-up {
+  animation: ks-fade-up var(--ks-duration-lg) var(--ks-ease-out) both;
+}
+
+.animate-fade-in {
+  animation: ks-fade-in var(--ks-duration-lg) var(--ks-ease-out) both;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+
+/* ─────────────────────────────────────────────────────────────────
+   Selection
+   ───────────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--ks-accent);
+  color: var(--ks-accent-fg);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Scrollbar (minimal)
+   ───────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ks-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ks-border-strong);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ks-muted);
 }
