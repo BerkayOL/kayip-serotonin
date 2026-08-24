@@ -18,6 +18,15 @@ export function AudioVisualizer({
   const barsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
+    if (!isPlaying) {
+      barsRef.current.forEach((bar) => {
+        if (!bar) return;
+        bar.style.height = '15%';
+        bar.style.opacity = '0.25';
+      });
+      return;
+    }
+
     let animationFrameId: number;
     let phase = 0;
 
@@ -26,18 +35,13 @@ export function AudioVisualizer({
 
       barsRef.current.forEach((bar, i) => {
         if (!bar) return;
-        if (isPlaying) {
-          // Harmonic wave simulation representing 97 BPM trap bounce & acoustic harmonics
-          const wave1 = Math.sin(phase + i * 0.4) * 0.5 + 0.5;
-          const wave2 = Math.cos(phase * 1.5 + i * 0.7) * 0.3 + 0.3;
-          const noise = (Math.sin(phase * 3 + i * 1.2) + 1) * 0.2;
-          const heightPercent = Math.min(100, Math.max(15, (wave1 + wave2 + noise) * 60));
-          bar.style.height = `${heightPercent}%`;
-          bar.style.opacity = `${0.4 + (heightPercent / 100) * 0.6}`;
-        } else {
-          bar.style.height = '15%';
-          bar.style.opacity = '0.25';
-        }
+        // Harmonic wave simulation representing 97 BPM trap bounce & acoustic harmonics
+        const wave1 = Math.sin(phase + i * 0.4) * 0.5 + 0.5;
+        const wave2 = Math.cos(phase * 1.5 + i * 0.7) * 0.3 + 0.3;
+        const noise = (Math.sin(phase * 3 + i * 1.2) + 1) * 0.2;
+        const heightPercent = Math.min(100, Math.max(15, (wave1 + wave2 + noise) * 60));
+        bar.style.height = `${heightPercent}%`;
+        bar.style.opacity = `${0.4 + (heightPercent / 100) * 0.6}`;
       });
 
       animationFrameId = requestAnimationFrame(animate);
