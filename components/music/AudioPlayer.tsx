@@ -32,6 +32,35 @@ export function AudioPlayer() {
     }
   }, [isPlaying, currentTime, isMuted]);
 
+  const toggleMute = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted((prev) => !prev);
+    }
+  }, [isMuted]);
+
+  // Global Keyboard Shortcuts (Space: Play/Pause, M: Mute)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is currently typing in an input or textarea
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+        return;
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.key === 'm' || e.key === 'M') {
+        e.preventDefault();
+        toggleMute();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [togglePlay, toggleMute]);
+
   // Global event trigger (e.g. from Hero or Release cards)
   useEffect(() => {
     const handleTriggerPlay = () => {
@@ -84,13 +113,6 @@ export function AudioPlayer() {
       if (previewEnded && newTime < MAX_PREVIEW_SECONDS) {
         setPreviewEnded(false);
       }
-    }
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
     }
   };
 
@@ -180,12 +202,17 @@ export function AudioPlayer() {
 
             {/* Controls */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              {/* Keyboard Shortcut Hint badge */}
+              <span className="hidden md:inline text-[0.625rem] font-mono px-2 py-1 rounded border border-[var(--ks-border)] text-[var(--ks-subtle)]" title="Boşluk tuşuna basarak durdurup başlatabilirsiniz">
+                Boşluk: {isPlaying ? 'Durdur' : 'Çal'}
+              </span>
+
               {/* Play/Pause Button */}
               <button
                 type="button"
                 onClick={togglePlay}
                 aria-label={isPlaying ? 'Durdur' : 'Çal'}
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)] hover:scale-105"
+                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)] hover:scale-105 cursor-pointer"
                 style={{
                   background: 'var(--ks-fg)',
                   color: 'var(--ks-bg)',
@@ -208,7 +235,7 @@ export function AudioPlayer() {
                 type="button"
                 onClick={toggleMute}
                 aria-label={isMuted ? 'Sesi Aç' : 'Sessize Al'}
-                className="p-2 transition-colors duration-200 hidden sm:block focus-visible:outline-[var(--ks-accent)]"
+                className="p-2 transition-colors duration-200 hidden sm:block focus-visible:outline-[var(--ks-accent)] cursor-pointer"
                 style={{ color: isMuted ? 'var(--ks-accent)' : 'var(--ks-muted)' }}
               >
                 {isMuted ? (
@@ -230,7 +257,7 @@ export function AudioPlayer() {
                 type="button"
                 onClick={() => setIsVisible(false)}
                 aria-label="Oynatıcıyı Gizle"
-                className="p-2 transition-colors duration-200 hover:text-[var(--ks-fg)] focus-visible:outline-[var(--ks-accent)]"
+                className="p-2 transition-colors duration-200 hover:text-[var(--ks-fg)] focus-visible:outline-[var(--ks-accent)] cursor-pointer"
                 style={{ color: 'var(--ks-subtle)' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

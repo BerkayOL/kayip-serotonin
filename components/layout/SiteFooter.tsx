@@ -7,6 +7,8 @@ const footerLinks = [
   { href: '/music', label: 'Müzik' },
   { href: '/story', label: 'Hikaye' },
   { href: '/social-impact', label: 'Sosyal Etki' },
+  { href: '/press', label: 'Basın Kiti (EPK)' },
+  { href: '/contact', label: 'İletişim & İş Birliği' },
 ];
 
 const socialPlatforms = [

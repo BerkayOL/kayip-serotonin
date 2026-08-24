@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { artist } from '@/data/artist';
-
 import { SerotoninMeter } from '@/components/ui/SerotoninMeter';
 
 const navLinks = [
   { href: '/music', label: 'Müzik' },
   { href: '/story', label: 'Hikaye' },
   { href: '/social-impact', label: 'Sosyal Etki' },
+  { href: '/press', label: 'Basın' },
+  { href: '/contact', label: 'İletişim' },
 ];
 
 export function SiteNav() {
@@ -80,7 +81,7 @@ export function SiteNav() {
           <div className="hidden md:flex items-center gap-8">
             <SerotoninMeter />
 
-            <ul className="flex items-center gap-8 list-none m-0 p-0">
+            <ul className="flex items-center gap-6 list-none m-0 p-0">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
