@@ -4,23 +4,23 @@ import { currentRelease } from '@/data/releases';
 const archiveItems = [
   {
     id: '01',
-    title: 'Galata Silueti & Gece Kuşağı',
+    title: 'Gece Şehri & İçsel Sessizlik',
     category: 'Görsel Atmosfer',
-    description: 'Parçanın ilhamını aldığı İstanbul gece manzarası ve kırık hatıraların silueti.',
+    description: 'Ayrılığın ardından geride kalan boşluk, sokakların yalnızlığı ve insanın kendi içine çekildiği anlar.',
     image: currentRelease.artwork || '/artwork/sinirlariastin.jpg',
   },
   {
     id: '02',
     title: 'Serotonin Molekül Geometrisi',
     category: 'Kimyasal Kimlik',
-    description: 'Dairesel ark ve serotonin molekülünün minimalist vektörel çizimi.',
+    description: 'Duygusal çöküşün ve eksilen mutluluk hormonunun minimalist geometrik sembolü.',
     image: '/images/logo.png',
   },
   {
     id: '03',
-    title: 'Sınırları Aştın — Ana Sanat Eseri',
-    category: 'Orijinal Kapak',
-    description: 'Kırık cam ardında kaybolan şehir ve insanın içsel çatışması.',
+    title: 'Sınırları Aştın — Orijinal Kapak',
+    category: 'Kapak Çalışması',
+    description: 'Kırık bir camın önünde duran gölge; bir gecede darmadağın olan hislerin görsel karşılığı.',
     image: currentRelease.artwork || '/artwork/sinirlariastin.jpg',
   },
 ];

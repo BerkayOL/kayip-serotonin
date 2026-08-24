@@ -4,12 +4,15 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { currentRelease } from '@/data/releases';
 
+// Professional preview cap: 45 seconds preview
+const MAX_PREVIEW_SECONDS = 45;
+
 export function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [previewEnded, setPreviewEnded] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const audioSrc = currentRelease.audioPreview;
@@ -19,40 +22,68 @@ export function AudioPlayer() {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play().catch(() => {
-        // Handle autoplay policy restriction
-      });
+      if (currentTime >= MAX_PREVIEW_SECONDS) {
+        audioRef.current.currentTime = 0;
+        setCurrentTime(0);
+        setPreviewEnded(false);
+      }
+      audioRef.current.volume = isMuted ? 0 : 1;
+      audioRef.current.play().catch(() => {});
     }
-  }, [isPlaying]);
+  }, [isPlaying, currentTime, isMuted]);
 
-  // Listen to global custom events (e.g. from Hero or Release cards)
+  // Global event trigger (e.g. from Hero or Release cards)
   useEffect(() => {
     const handleTriggerPlay = () => {
       if (audioRef.current) {
+        if (currentTime >= MAX_PREVIEW_SECONDS) {
+          audioRef.current.currentTime = 0;
+          setCurrentTime(0);
+          setPreviewEnded(false);
+        }
+        audioRef.current.volume = isMuted ? 0 : 1;
         audioRef.current.play().catch(() => {});
       }
     };
     window.addEventListener('ks-play-audio', handleTriggerPlay);
     return () => window.removeEventListener('ks-play-audio', handleTriggerPlay);
-  }, []);
+  }, [currentTime, isMuted]);
 
   const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
-  };
+    if (!audioRef.current) return;
+    const cur = audioRef.current.currentTime;
 
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
+    // Smooth studio fade-out in last 3 seconds of preview
+    if (cur >= MAX_PREVIEW_SECONDS - 3 && cur < MAX_PREVIEW_SECONDS) {
+      const remaining = MAX_PREVIEW_SECONDS - cur;
+      const volumeFade = Math.max(0, remaining / 3);
+      if (!isMuted) {
+        audioRef.current.volume = volumeFade;
+      }
     }
+
+    // Cut off at MAX_PREVIEW_SECONDS
+    if (cur >= MAX_PREVIEW_SECONDS) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setCurrentTime(MAX_PREVIEW_SECONDS);
+      setIsPlaying(false);
+      setPreviewEnded(true);
+      if (!isMuted) audioRef.current.volume = 1;
+      return;
+    }
+
+    setCurrentTime(cur);
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
+    const newTime = Math.min(parseFloat(e.target.value), MAX_PREVIEW_SECONDS);
     if (audioRef.current) {
       audioRef.current.currentTime = newTime;
       setCurrentTime(newTime);
+      if (previewEnded && newTime < MAX_PREVIEW_SECONDS) {
+        setPreviewEnded(false);
+      }
     }
   };
 
@@ -65,8 +96,9 @@ export function AudioPlayer() {
 
   const formatTime = (time: number) => {
     if (isNaN(time)) return '0:00';
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
+    const clamped = Math.min(time, MAX_PREVIEW_SECONDS);
+    const minutes = Math.floor(clamped / 60);
+    const seconds = Math.floor(clamped % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
@@ -77,11 +109,16 @@ export function AudioPlayer() {
       <audio
         ref={audioRef}
         src={audioSrc}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => {
+          setIsPlaying(true);
+          setPreviewEnded(false);
+        }}
         onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={() => {
+          setIsPlaying(false);
+          setPreviewEnded(true);
+        }}
         onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
         preload="metadata"
       />
 
@@ -96,10 +133,11 @@ export function AudioPlayer() {
         <div
           className="flex flex-col gap-2 p-3.5 sm:p-4 rounded border backdrop-blur-md shadow-2xl transition-colors duration-200"
           style={{
-            background: 'rgba(13, 11, 11, 0.90)',
+            background: 'rgba(13, 11, 11, 0.92)',
             borderColor: isPlaying ? 'var(--ks-accent)' : 'var(--ks-border-strong)',
           }}
         >
+          {/* Main Controls Row */}
           <div className="flex items-center justify-between gap-3 sm:gap-4">
             {/* Artwork & Info */}
             <div className="flex items-center gap-3 min-w-0">
@@ -132,8 +170,10 @@ export function AudioPlayer() {
                 >
                   {currentRelease.title}
                 </span>
-                <span className="text-xs truncate" style={{ color: 'var(--ks-subtle)' }}>
-                  Kayıp Serotonin — Önizleme
+                <span className="text-xs truncate flex items-center gap-1.5" style={{ color: 'var(--ks-subtle)' }}>
+                  <span>Kayıp Serotonin</span>
+                  <span>•</span>
+                  <span className="text-[var(--ks-accent)] font-medium">45sn Önizleme</span>
                 </span>
               </div>
             </div>
@@ -145,7 +185,7 @@ export function AudioPlayer() {
                 type="button"
                 onClick={togglePlay}
                 aria-label={isPlaying ? 'Durdur' : 'Çal'}
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)]"
+                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)] hover:scale-105"
                 style={{
                   background: 'var(--ks-fg)',
                   color: 'var(--ks-bg)',
@@ -210,17 +250,60 @@ export function AudioPlayer() {
               <input
                 type="range"
                 min="0"
-                max={duration || 100}
+                max={MAX_PREVIEW_SECONDS}
                 value={currentTime}
                 onChange={handleSeek}
-                aria-label="Müzik Konumu"
+                aria-label="Müzik Önizleme Konumu"
                 className="w-full h-1 bg-[var(--ks-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--ks-accent)] focus-visible:outline-[var(--ks-accent)]"
               />
             </div>
             <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
-              {formatTime(duration)}
+              {formatTime(MAX_PREVIEW_SECONDS)}
             </span>
           </div>
+
+          {/* End of Preview Notification with Direct Streaming Links */}
+          {previewEnded && (
+            <div
+              className="mt-1 pt-2 border-t border-[var(--ks-border)] flex flex-col sm:flex-row items-center justify-between gap-2 animate-fade-in"
+            >
+              <span className="text-xs" style={{ color: 'var(--ks-muted)' }}>
+                Önizleme bitti. Şarkının tamamı için:
+              </span>
+              <div className="flex items-center gap-3">
+                {currentRelease.links.spotify && (
+                  <a
+                    href={currentRelease.links.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium hover:underline text-[#1DB954]"
+                  >
+                    Spotify ↗
+                  </a>
+                )}
+                {currentRelease.links.appleMusic && (
+                  <a
+                    href={currentRelease.links.appleMusic}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium hover:underline text-[#fc3c44]"
+                  >
+                    Apple Music ↗
+                  </a>
+                )}
+                {currentRelease.links.youtube && (
+                  <a
+                    href={currentRelease.links.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium hover:underline text-[#FF0000]"
+                  >
+                    YouTube ↗
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </aside>
     </>

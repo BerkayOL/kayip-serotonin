@@ -8,34 +8,93 @@ export const releases: Release[] = [
     releaseDate: null,
     artwork: '/artwork/sinirlariastin.jpg',
     artworkAlt:
-      'Sınırları Aştın — Kırık bir camın önünde İstanbul siluetine bakan siluet. Galata Kulesi ve Boğaz ışıkları arka planda.',
+      'Sınırları Aştın — Kırık bir camın önünde gece şehrine bakan yalnız bir siluet.',
     description:
-      "Sınırları Aştın, Kayıp Serotonin'in bağımsız müzik yolculuğundaki ilk single. Gece geç saatlerde içimizde yankılanan kırgınlıkların ve aşk acılarının notalara döküldüğü melankolik bir manifesto.",
+      "Sınırları Aştın, Kayıp Serotonin'in Berkay Ay ve Halim Parlak imzalı ilk single çalışması. Ani bir ayrılığın ardından yaşanan şok, terk edilme hissi ve insanın iç dünyasında kalan derin kırgınlıkların melankolik bir dille dışa vurumu.",
     audioPreview: '/audio/sinirlariastin.mp3',
     lyrics: [
+      // Verse 1
       {
-        text: 'Kırık camlar ardından baktım bu şehre,',
-        note: 'Sabaha karşı 04:12 — Galata ve Boğaz ışıkları altında yazıldı.',
+        text: 'Kalbin nasıl değişti söyle bir anda?',
+        note: 'En çok güvendiğin insanın gözlerinin önünde bir yabancıya dönüşmesi.',
       },
       {
-        text: 'Işıklar sönmüş, gölgeler kalmış geriye.',
-        note: 'Yarım kalmış bir cümlenin bıraktığı sessizlik hissi.',
+        text: 'Dün her şeyindim, bugün yabancı aslında.',
+        note: 'Aylar süren yakınlığın tek bir günde sıfırlanmasının verdiği acı gerçeklik.',
       },
       {
-        text: 'Sözlerin yankılanır hala gecenin koynunda,',
-        note: 'Unutulmak istenen ama zihinden silinmeyen anılar.',
+        text: 'Ben sana koşarken sen uzağa kaçtın,',
+        note: 'Tek taraflı çabanın ve karşılıksız kalmanın yorgunluğu.',
       },
       {
-        text: 'Bütün sınırları aştın, beni darmadağın bıraktın.',
-        note: 'Parçanın ana duygu omurgası — kırılma noktası.',
+        text: 'Sevda dediğin buysa baştan yandık!',
+        note: 'Güvenin yıkıldığı ilk büyük hayal kırıklığı.',
+      },
+
+      // Pre-Chorus
+      {
+        text: 'Canımdan öteye koydum, hata bende.',
+        note: 'Bütün suçu kendinde aradığın o çaresiz kabulleniş anı.',
       },
       {
-        text: 'Kaybolan bir serotonin gibi çekildin içimden,',
-        note: 'Projenin adını taşıyan o derin biyokimyasal ve duygusal boşluk.',
+        text: 'Ruhumdan eksildin... Kalmadı çare...',
+        note: 'Bir insanın gidişiyle içindeki yaşama enerjisinin çekilmesi.',
       },
       {
-        text: 'Şimdi ne bu sokaklar beni anlar, ne de sen.',
-        note: 'Yalnızlığın ve kabullenişin son perdesi.',
+        text: 'Şimdi dur... geri sar... bi\' bekle...',
+        note: 'Zihnin yaşananları durdurup olan biteni anlama çabası.',
+      },
+
+      // Chorus
+      {
+        text: 'Kalbimde iz bırakan tek sendin!',
+        note: 'Unutulmak istense de silinmeyen tek gerçek.',
+      },
+      {
+        text: 'Sevdayı boşver, yokluğunu ezberledim!',
+        note: 'Artık sevgi değil, sadece o kişinin yokluğuyla yaşamayı öğrenmek.',
+      },
+      {
+        text: 'Ben seni içimde en derine yazdım,',
+        note: 'Her şeye rağmen değer vermiş olmanın dürüst itirafı.',
+      },
+      {
+        text: 'Sen beni bir gecede darmadağın bıraktın!',
+        note: 'Parçanın ana kırılma noktası — aniden gelen ve geride enkaz bırakan son.',
+      },
+
+      // Verse 2
+      {
+        text: 'Ben sevdayla yürüdüm, sen yolunu şaştın,',
+        note: 'İki insanın aynı yola çıkıp bambaşka niyetlerle ayrılması.',
+      },
+      {
+        text: 'İçimde adını bin defa yankılattın.',
+        note: 'Sessiz odalarda zihinden çıkmayan sesler ve anılar.',
+      },
+      {
+        text: 'Karşıma geçip bana el gibi baktın,',
+        note: 'Dün sarıldığın insanın bugün sana bir yabancı gibi bakmasının soğukluğu.',
+      },
+      {
+        text: 'Aydınlık derken karanlıkta bıraktın.',
+        note: 'Umut verip en karanlık günde yalnız bırakılmanın yarattığı öfke.',
+      },
+
+      // Bridge
+      {
+        text: 'Belki de aydınlığını beni yakıp yarattın...',
+        note: 'Kendi mutluluğunu senin yıkımın ve gözyaşların üzerine kurması.',
+      },
+      {
+        text: 'İçimde şehir yıkık, dalımı da kırdın.',
+        note: 'Tutunacak hiçbir dalın, sığınacak hiçbir yerin kalmaması.',
+      },
+
+      // Outro
+      {
+        text: 'Darmadağın bıraktın... Bizi yaktın...',
+        note: 'Biten bir hikayenin ardından geriye kalan son yorgun nefes.',
       },
     ],
     credits: {

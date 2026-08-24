@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { currentRelease } from '@/data/releases';
 
 export function StoryCardModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const generateAndDownload = () => {
     setIsGenerating(true);
@@ -25,7 +24,7 @@ export function StoryCardModal() {
 
     // 2. Subtle radial gradient
     const gradient = ctx.createRadialGradient(540, 700, 100, 540, 700, 800);
-    gradient.addColorStop(0, 'rgba(163, 82, 82, 0.25)');
+    gradient.addColorStop(0, 'rgba(163, 82, 82, 0.22)');
     gradient.addColorStop(1, 'rgba(13, 11, 11, 0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 1080, 1920);
@@ -43,41 +42,41 @@ export function StoryCardModal() {
       ctx.drawImage(img, x, y, size, size);
 
       // Artwork subtle border
-      ctx.strokeStyle = 'rgba(232, 221, 208, 0.2)';
+      ctx.strokeStyle = 'rgba(232, 221, 208, 0.25)';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, size, size);
 
       // 4. Header Top Text
-      ctx.fillStyle = 'rgba(232, 221, 208, 0.6)';
+      ctx.fillStyle = 'rgba(232, 221, 208, 0.65)';
       ctx.font = '500 28px sans-serif';
       ctx.textAlign = 'center';
       ctx.letterSpacing = '6px';
       ctx.fillText('KAYIP SEROTONİN', 540, 220);
 
-      ctx.fillStyle = 'rgba(232, 221, 208, 0.4)';
+      ctx.fillStyle = 'rgba(232, 221, 208, 0.45)';
       ctx.font = '400 22px sans-serif';
       ctx.letterSpacing = '3px';
-      ctx.fillText('BAĞIMSIZ MÜZİK PROJESİ', 540, 270);
+      ctx.fillText('BERKAY AY & HALİM PARLAK', 540, 270);
 
       // 5. Track Title
       ctx.fillStyle = '#ede5db';
-      ctx.font = '600 68px serif';
+      ctx.font = '600 70px serif';
       ctx.fillText(currentRelease.title, 540, 1260);
 
-      // 6. Lyric Quote
-      ctx.fillStyle = 'rgba(232, 221, 208, 0.8)';
+      // 6. Real Lyric Quote
+      ctx.fillStyle = 'rgba(232, 221, 208, 0.88)';
       ctx.font = 'italic 34px serif';
-      ctx.fillText('“Bütün sınırları aştın, beni darmadağın bıraktın.”', 540, 1370);
+      ctx.fillText('“Sen beni bir gecede darmadağın bıraktın!”', 540, 1370);
 
       // 7. Footer metadata & Spotify callout
-      ctx.fillStyle = 'rgba(232, 221, 208, 0.4)';
+      ctx.fillStyle = 'rgba(232, 221, 208, 0.45)';
       ctx.font = '400 24px sans-serif';
       ctx.letterSpacing = '4px';
       ctx.fillText('SPOTIFY & TÜM DİJİTAL PLATFORMLARDA', 540, 1680);
 
       ctx.fillStyle = '#a35252';
-      ctx.font = '500 22px sans-serif';
-      ctx.fillText('kayipserotonin.com', 540, 1740);
+      ctx.font = '500 24px sans-serif';
+      ctx.fillText('kayipserotonin.com.tr', 540, 1740);
 
       // Trigger download
       const link = document.createElement('a');
