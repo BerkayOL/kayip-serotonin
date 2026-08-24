@@ -30,7 +30,7 @@ export function generatePageMetadata({
   description,
   path = '',
   ogImage,
-  type = 'website',
+  type = 'website' as const,
 }: {
   title?: string;
   description?: string;
@@ -78,7 +78,7 @@ export function generatePageMetadata({
       url: canonical,
       siteName: siteMetadata.name,
       locale: siteMetadata.locale,
-      type: type as any,
+      type: (type === 'website' ? 'website' : 'music.song') as 'website',
       images: [
         {
           url: image,

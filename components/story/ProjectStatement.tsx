@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { artist } from '@/data/artist';
 
 export function ProjectStatement() {
   return (

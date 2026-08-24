@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
-import { siteMetadata } from '@/lib/metadata';
 
-export const runtime = 'edge';
+export const dynamic = 'force-static';
+export const runtime = 'nodejs';
 export const alt = 'Kayıp Serotonin — Resmi Web Sitesi';
 export const size = {
   width: 1200,
@@ -47,7 +47,6 @@ export default async function Image() {
             flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
-            zIndex: 10,
           }}
         >
           <span

@@ -1,27 +1,19 @@
-'use client';
-
-import { useState } from 'react';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { artist } from '@/data/artist';
 import { currentRelease } from '@/data/releases';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { generatePageMetadata } from '@/lib/metadata';
+import { BrandColorPalette } from '@/components/ui/BrandColorPalette';
 
-const brandColors = [
-  { hex: '#0D0B0B', name: 'Gece Karası', use: 'Arka Plan', textColor: 'text-white' },
-  { hex: '#EDE5DB', name: 'Kemik Beyazı', use: 'Ana Tipografi', textColor: 'text-black' },
-  { hex: '#A35252', name: 'Kayıp Bordo', use: 'Vurgu / Accent', textColor: 'text-white' },
-  { hex: '#1C1717', name: 'Karanlık Yüzey', use: 'Kart Zeminleri', textColor: 'text-white' },
-];
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Basın Kiti (EPK)',
+  description:
+    'Kayıp Serotonin resmi Electronic Press Kit. Biyografi, yüksek çözünürlüklü görseller, renk paleti ve basın iletişim bilgileri.',
+  path: '/press',
+});
 
 export default function PressPage() {
-  const [copiedHex, setCopiedHex] = useState<string | null>(null);
-
-  const copyToClipboard = (hex: string) => {
-    navigator.clipboard.writeText(hex);
-    setCopiedHex(hex);
-    setTimeout(() => setCopiedHex(null), 2000);
-  };
-
   return (
     <div className="pt-32 pb-24">
       <JsonLd type="website" pagePath="/press" pageTitle="Basın Kiti" />
@@ -114,7 +106,7 @@ export default function PressPage() {
                 className="ks-btn ks-btn-outline text-xs w-fit"
               >
                 <span>Logoyu İndir (PNG)</span>
-                <span>↓</span>
+                <span aria-hidden="true">↓</span>
               </a>
             </div>
 
@@ -125,7 +117,7 @@ export default function PressPage() {
                   {currentRelease.artwork && (
                     <Image
                       src={currentRelease.artwork}
-                      alt={currentRelease.title}
+                      alt={currentRelease.artworkAlt}
                       fill
                       className="object-cover"
                     />
@@ -133,7 +125,7 @@ export default function PressPage() {
                 </div>
                 <div>
                   <h3 className="text-base font-medium" style={{ color: 'var(--ks-fg)' }}>
-                    Single Kapak Sanatı (3000x3000px)
+                    Single Kapak Sanatı
                   </h3>
                   <p className="text-xs" style={{ color: 'var(--ks-muted)' }}>
                     &ldquo;Sınırları Aştın&rdquo; yüksek çözünürlüklü orijinal kapak görseli.
@@ -146,7 +138,7 @@ export default function PressPage() {
                 className="ks-btn ks-btn-outline text-xs w-fit"
               >
                 <span>Kapağı İndir (HQ)</span>
-                <span>↓</span>
+                <span aria-hidden="true">↓</span>
               </a>
             </div>
           </div>
@@ -159,35 +151,11 @@ export default function PressPage() {
               03 // Renk Paleti
             </span>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--ks-subtle)' }}>
-              Görsel tasarımcılar, afiş hazırlayanlar ve medya editörleri için resmi HEX kodları. Koda tıklayarak anında kopyalayabilirsiniz.
+              Görsel tasarımcılar, afiş hazırlayanlar ve medya editörleri için resmi HEX kodları.
             </p>
           </div>
-          <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {brandColors.map((color) => {
-              const isCopied = copiedHex === color.hex;
-              return (
-                <button
-                  key={color.hex}
-                  type="button"
-                  onClick={() => copyToClipboard(color.hex)}
-                  className="p-4 border border-[var(--ks-border)] flex flex-col justify-between h-32 text-left transition-transform hover:scale-105 cursor-pointer rounded-sm group relative"
-                  style={{ backgroundColor: color.hex }}
-                  title={`${color.hex} kodunu kopyalamak için tıkla`}
-                >
-                  <span className="text-[0.625rem] uppercase tracking-wider font-mono opacity-80" style={{ color: color.textColor === 'text-white' ? '#fff' : '#000' }}>
-                    {isCopied ? '✓ KOPYALANDI!' : 'KOPYALA'}
-                  </span>
-                  <div>
-                    <span className="text-xs font-mono font-bold block" style={{ color: color.textColor === 'text-white' ? '#fff' : '#000' }}>
-                      {color.hex}
-                    </span>
-                    <span className="text-[0.6875rem] opacity-75 block" style={{ color: color.textColor === 'text-white' ? '#fff' : '#000' }}>
-                      {color.name}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+          <div className="md:col-span-8">
+            <BrandColorPalette />
           </div>
         </div>
 
@@ -206,7 +174,7 @@ export default function PressPage() {
             className="ks-btn ks-btn-primary text-xs shrink-0"
           >
             <span>kayipserotonin@gmail.com</span>
-            <span>✉</span>
+            <span aria-hidden="true">✉</span>
           </a>
         </div>
       </div>

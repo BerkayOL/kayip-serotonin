@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { impactCampaign } from '@/data/social-impact';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { generatePageMetadata } from '@/lib/metadata';

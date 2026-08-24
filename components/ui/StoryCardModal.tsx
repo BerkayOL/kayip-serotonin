@@ -30,7 +30,7 @@ export function StoryCardModal() {
     ctx.fillRect(0, 0, 1080, 1920);
 
     // 3. Load artwork
-    const img = new (window as any).Image();
+    const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = currentRelease.artwork || '/artwork/sinirlariastin.jpg';
 
@@ -89,7 +89,7 @@ export function StoryCardModal() {
 
     img.onerror = () => {
       setIsGenerating(false);
-      alert('Görsel oluşturulurken bir sorun oluştu.');
+      console.error('[StoryCardModal] Canvas image could not be loaded.');
     };
   };
 

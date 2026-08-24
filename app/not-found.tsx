@@ -1,4 +1,11 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Serotonin Bulunamadı — Kayıp Serotonin',
+  description: 'Aradığın sayfa bulunamadı. Kayıp Serotonin ana sayfasına dön.',
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (

@@ -13,7 +13,6 @@ export function ReleaseSection() {
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
 
     window.addEventListener('ks-play-audio', handlePlay);
     return () => {
