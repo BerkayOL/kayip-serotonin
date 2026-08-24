@@ -19,7 +19,7 @@ export function SiteNav() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 48);
+    const handleScroll = () => setIsScrolled(window.scrollY > 30);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -37,7 +37,9 @@ export function SiteNav() {
   // Prevent body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   return (
@@ -47,7 +49,7 @@ export function SiteNav() {
         className={[
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
           isScrolled
-            ? 'border-b border-[var(--ks-border)] bg-[var(--ks-bg)]/95 backdrop-blur-sm'
+            ? 'bg-[var(--ks-bg)]/92 backdrop-blur-md shadow-lg shadow-black/50'
             : 'bg-transparent',
         ].join(' ')}
       >
@@ -64,8 +66,8 @@ export function SiteNav() {
             <Image
               src={artist.logo}
               alt={artist.logoAlt}
-              width={36}
-              height={36}
+              width={34}
+              height={34}
               className="opacity-90 group-hover:opacity-100 transition-opacity duration-200"
               priority
             />

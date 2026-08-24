@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { currentRelease } from '@/data/releases';
+import { AudioVisualizer } from '@/components/music/AudioVisualizer';
 
 // Professional preview cap: 45 seconds preview
 const MAX_PREVIEW_SECONDS = 45;
@@ -42,7 +43,6 @@ export function AudioPlayer() {
   // Global Keyboard Shortcuts (Space: Play/Pause, M: Mute)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is currently typing in an input or textarea
       const target = e.target as HTMLElement;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
         return;
@@ -61,9 +61,10 @@ export function AudioPlayer() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [togglePlay, toggleMute]);
 
-  // Global event trigger (e.g. from Hero or Release cards)
+  // Global event triggers (e.g. from Hero, Release cards, or Header)
   useEffect(() => {
     const handleTriggerPlay = () => {
+      setIsVisible(true);
       if (audioRef.current) {
         if (currentTime >= MAX_PREVIEW_SECONDS) {
           audioRef.current.currentTime = 0;
@@ -74,8 +75,17 @@ export function AudioPlayer() {
         audioRef.current.play().catch(() => {});
       }
     };
+
+    const handleTriggerShow = () => {
+      setIsVisible(true);
+    };
+
     window.addEventListener('ks-play-audio', handleTriggerPlay);
-    return () => window.removeEventListener('ks-play-audio', handleTriggerPlay);
+    window.addEventListener('ks-show-audio', handleTriggerShow);
+    return () => {
+      window.removeEventListener('ks-play-audio', handleTriggerPlay);
+      window.removeEventListener('ks-show-audio', handleTriggerShow);
+    };
   }, [currentTime, isMuted]);
 
   const handleTimeUpdate = () => {
@@ -145,194 +155,217 @@ export function AudioPlayer() {
       />
 
       {/* Floating Bottom Music Bar */}
-      <aside
-        aria-label="Ses Oynatıcısı"
-        className={[
-          'fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-2xl transition-all duration-300',
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none',
-        ].join(' ')}
-      >
-        <div
-          className="flex flex-col gap-2 p-3.5 sm:p-4 rounded border backdrop-blur-md shadow-2xl transition-colors duration-200"
-          style={{
-            background: 'rgba(13, 11, 11, 0.92)',
-            borderColor: isPlaying ? 'var(--ks-accent)' : 'var(--ks-border-strong)',
-          }}
+      {isVisible ? (
+        <aside
+          aria-label="Ses Oynatıcısı"
+          className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-2xl transition-all duration-300 animate-fade-up"
         >
-          {/* Main Controls Row */}
-          <div className="flex items-center justify-between gap-3 sm:gap-4">
-            {/* Artwork & Info */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 overflow-hidden rounded-sm border"
-                style={{ borderColor: 'var(--ks-border)' }}
-              >
-                {currentRelease.artwork && (
-                  <Image
-                    src={currentRelease.artwork}
-                    alt={currentRelease.title}
-                    fill
-                    sizes="44px"
-                    className="object-cover"
-                  />
-                )}
-                {isPlaying && (
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-0.5">
-                    <span className="w-0.5 h-3 bg-[var(--ks-accent)] animate-pulse" />
-                    <span className="w-0.5 h-4 bg-[var(--ks-fg)] animate-pulse delay-75" />
-                    <span className="w-0.5 h-2 bg-[var(--ks-accent)] animate-pulse delay-150" />
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-col min-w-0">
-                <span
-                  className="text-sm font-medium truncate"
-                  style={{ color: 'var(--ks-fg)', fontFamily: 'var(--ks-font-ui)' }}
+          <div
+            className="flex flex-col gap-2 p-3 sm:p-4 rounded-lg border backdrop-blur-md shadow-2xl transition-colors duration-200"
+            style={{
+              background: 'rgba(13, 11, 11, 0.94)',
+              borderColor: isPlaying ? 'var(--ks-accent)' : 'var(--ks-border-strong)',
+            }}
+          >
+            {/* Main Controls Row */}
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              {/* Artwork & Info */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div
+                  className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 overflow-hidden rounded border"
+                  style={{ borderColor: 'var(--ks-border)' }}
                 >
-                  {currentRelease.title}
+                  {currentRelease.artwork && (
+                    <Image
+                      src={currentRelease.artwork}
+                      alt={currentRelease.title}
+                      fill
+                      sizes="44px"
+                      className="object-cover"
+                    />
+                  )}
+                  {isPlaying && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-0.5">
+                      <span className="w-0.5 h-3 bg-[var(--ks-accent)] animate-pulse" />
+                      <span className="w-0.5 h-4 bg-[var(--ks-fg)] animate-pulse delay-75" />
+                      <span className="w-0.5 h-2 bg-[var(--ks-accent)] animate-pulse delay-150" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col min-w-0">
+                  <span
+                    className="text-sm font-medium truncate"
+                    style={{ color: 'var(--ks-fg)', fontFamily: 'var(--ks-font-ui)' }}
+                  >
+                    {currentRelease.title}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs truncate" style={{ color: 'var(--ks-subtle)' }}>
+                      Kayıp Serotonin
+                    </span>
+                    <span className="text-[var(--ks-accent)] font-medium text-[0.6875rem] hidden xs:inline">
+                      • 45sn
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Center Spectrum Visualizer */}
+              <div className="hidden sm:flex items-center justify-center px-2">
+                <AudioVisualizer isPlaying={isPlaying} barCount={14} variant="compact" />
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                {/* Keyboard Shortcut Hint badge */}
+                <span
+                  className="hidden lg:inline text-[0.625rem] font-mono px-2 py-1 rounded border border-[var(--ks-border)] text-[var(--ks-subtle)]"
+                  title="Boşluk tuşuna basarak durdurup başlatabilirsiniz"
+                >
+                  Boşluk: {isPlaying ? 'Durdur' : 'Çal'}
                 </span>
-                <span className="text-xs truncate flex items-center gap-1.5" style={{ color: 'var(--ks-subtle)' }}>
-                  <span>Kayıp Serotonin</span>
-                  <span>•</span>
-                  <span className="text-[var(--ks-accent)] font-medium">45sn Önizleme</span>
-                </span>
+
+                {/* Play/Pause Button */}
+                <button
+                  type="button"
+                  onClick={togglePlay}
+                  aria-label={isPlaying ? 'Durdur' : 'Çal'}
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)] hover:scale-105 cursor-pointer shrink-0"
+                  style={{
+                    background: 'var(--ks-fg)',
+                    color: 'var(--ks-bg)',
+                  }}
+                >
+                  {isPlaying ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <rect x="6" y="4" width="4" height="16" rx="1" />
+                      <rect x="14" y="4" width="4" height="16" rx="1" />
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-0.5" aria-hidden="true">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Mute Button */}
+                <button
+                  type="button"
+                  onClick={toggleMute}
+                  aria-label={isMuted ? 'Sesi Aç' : 'Sessize Al'}
+                  className="p-2 transition-colors duration-200 hidden sm:block focus-visible:outline-[var(--ks-accent)] cursor-pointer"
+                  style={{ color: isMuted ? 'var(--ks-accent)' : 'var(--ks-muted)' }}
+                >
+                  {isMuted ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+                      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0a7 7 0 0 1-.11 1.23" />
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Dismiss button */}
+                <button
+                  type="button"
+                  onClick={() => setIsVisible(false)}
+                  aria-label="Oynatıcıyı Küçült"
+                  title="Oynatıcıyı alta küçült (tekrar açabilirsiniz)"
+                  className="p-2 transition-colors duration-200 hover:text-[var(--ks-fg)] focus-visible:outline-[var(--ks-accent)] cursor-pointer"
+                  style={{ color: 'var(--ks-subtle)' }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            {/* Controls */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              {/* Keyboard Shortcut Hint badge */}
-              <span className="hidden md:inline text-[0.625rem] font-mono px-2 py-1 rounded border border-[var(--ks-border)] text-[var(--ks-subtle)]" title="Boşluk tuşuna basarak durdurup başlatabilirsiniz">
-                Boşluk: {isPlaying ? 'Durdur' : 'Çal'}
+            {/* Progress Bar & Timestamps */}
+            <div className="flex items-center gap-3 pt-1">
+              <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
+                {formatTime(currentTime)}
               </span>
-
-              {/* Play/Pause Button */}
-              <button
-                type="button"
-                onClick={togglePlay}
-                aria-label={isPlaying ? 'Durdur' : 'Çal'}
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-[var(--ks-accent)] hover:scale-105 cursor-pointer"
-                style={{
-                  background: 'var(--ks-fg)',
-                  color: 'var(--ks-bg)',
-                }}
-              >
-                {isPlaying ? (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <rect x="6" y="4" width="4" height="16" rx="1" />
-                    <rect x="14" y="4" width="4" height="16" rx="1" />
-                  </svg>
-                ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-0.5" aria-hidden="true">
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  </svg>
-                )}
-              </button>
-
-              {/* Mute Button */}
-              <button
-                type="button"
-                onClick={toggleMute}
-                aria-label={isMuted ? 'Sesi Aç' : 'Sessize Al'}
-                className="p-2 transition-colors duration-200 hidden sm:block focus-visible:outline-[var(--ks-accent)] cursor-pointer"
-                style={{ color: isMuted ? 'var(--ks-accent)' : 'var(--ks-muted)' }}
-              >
-                {isMuted ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
-                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0a7 7 0 0 1-.11 1.23" />
-                  </svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
-                  </svg>
-                )}
-              </button>
-
-              {/* Dismiss button */}
-              <button
-                type="button"
-                onClick={() => setIsVisible(false)}
-                aria-label="Oynatıcıyı Gizle"
-                className="p-2 transition-colors duration-200 hover:text-[var(--ks-fg)] focus-visible:outline-[var(--ks-accent)] cursor-pointer"
-                style={{ color: 'var(--ks-subtle)' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Progress Bar & Timestamps */}
-          <div className="flex items-center gap-3 pt-1">
-            <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
-              {formatTime(currentTime)}
-            </span>
-            <div className="relative flex-1 flex items-center">
-              <input
-                type="range"
-                min="0"
-                max={MAX_PREVIEW_SECONDS}
-                value={currentTime}
-                onChange={handleSeek}
-                aria-label="Müzik Önizleme Konumu"
-                className="w-full h-1 bg-[var(--ks-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--ks-accent)] focus-visible:outline-[var(--ks-accent)]"
-              />
-            </div>
-            <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
-              {formatTime(MAX_PREVIEW_SECONDS)}
-            </span>
-          </div>
-
-          {/* End of Preview Notification with Direct Streaming Links */}
-          {previewEnded && (
-            <div
-              className="mt-1 pt-2 border-t border-[var(--ks-border)] flex flex-col sm:flex-row items-center justify-between gap-2 animate-fade-in"
-            >
-              <span className="text-xs" style={{ color: 'var(--ks-muted)' }}>
-                Önizleme bitti. Şarkının tamamı için:
-              </span>
-              <div className="flex items-center gap-3">
-                {currentRelease.links.spotify && (
-                  <a
-                    href={currentRelease.links.spotify}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-medium hover:underline text-[#1DB954]"
-                  >
-                    Spotify ↗
-                  </a>
-                )}
-                {currentRelease.links.appleMusic && (
-                  <a
-                    href={currentRelease.links.appleMusic}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-medium hover:underline text-[#fc3c44]"
-                  >
-                    Apple Music ↗
-                  </a>
-                )}
-                {currentRelease.links.youtube && (
-                  <a
-                    href={currentRelease.links.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-medium hover:underline text-[#FF0000]"
-                  >
-                    YouTube ↗
-                  </a>
-                )}
+              <div className="relative flex-1 flex items-center">
+                <input
+                  type="range"
+                  min="0"
+                  max={MAX_PREVIEW_SECONDS}
+                  value={currentTime}
+                  onChange={handleSeek}
+                  aria-label="Müzik Önizleme Konumu"
+                  className="w-full h-1 bg-[var(--ks-border-strong)] rounded-lg appearance-none cursor-pointer accent-[var(--ks-accent)] focus-visible:outline-[var(--ks-accent)]"
+                />
               </div>
+              <span className="text-[0.6875rem] tabular-nums font-mono" style={{ color: 'var(--ks-subtle)' }}>
+                {formatTime(MAX_PREVIEW_SECONDS)}
+              </span>
             </div>
-          )}
-        </div>
-      </aside>
+
+            {/* End of Preview Notification with Direct Streaming Links */}
+            {previewEnded && (
+              <div className="mt-1 pt-2 border-t border-[var(--ks-border)] flex flex-col sm:flex-row items-center justify-between gap-2 animate-fade-in">
+                <span className="text-xs" style={{ color: 'var(--ks-muted)' }}>
+                  Önizleme bitti. Şarkının tamamı için:
+                </span>
+                <div className="flex items-center gap-3">
+                  {currentRelease.links.spotify && (
+                    <a
+                      href={currentRelease.links.spotify}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-medium hover:underline text-[#1DB954]"
+                    >
+                      Spotify ↗
+                    </a>
+                  )}
+                  {currentRelease.links.appleMusic && (
+                    <a
+                      href={currentRelease.links.appleMusic}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-medium hover:underline text-[#fc3c44]"
+                    >
+                      Apple Music ↗
+                    </a>
+                  )}
+                  {currentRelease.links.youtube && (
+                    <a
+                      href={currentRelease.links.youtube}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-medium hover:underline text-[#FF0000]"
+                    >
+                      YouTube ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </aside>
+      ) : (
+        /* Minimized floating reopen pill (allows reopening without page reload!) */
+        <button
+          type="button"
+          onClick={() => setIsVisible(true)}
+          aria-label="Ses Çaları Göster"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-[var(--ks-border-strong)] bg-[var(--ks-surface-raised)]/95 backdrop-blur-md shadow-2xl text-xs font-medium text-[var(--ks-fg)] hover:border-[var(--ks-accent)] hover:scale-105 transition-all duration-200 cursor-pointer animate-fade-in group"
+        >
+          <span className="w-2 h-2 rounded-full bg-[var(--ks-accent)] animate-pulse" />
+          <span className="group-hover:text-[var(--ks-accent)] transition-colors duration-200">
+            {isPlaying ? 'Müzik Çalıyor ♬' : 'Müzik Çaları Aç ♬'}
+          </span>
+          <AudioVisualizer isPlaying={isPlaying} barCount={6} variant="compact" className="h-3 ml-1" />
+        </button>
+      )}
     </>
   );
 }

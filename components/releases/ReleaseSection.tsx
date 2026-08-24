@@ -1,15 +1,29 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { currentRelease } from '@/data/releases';
 import { PlatformLinks } from './PlatformLinks';
 import { StoryCardModal } from '@/components/ui/StoryCardModal';
+import { AudioVisualizer } from '@/components/music/AudioVisualizer';
 
 export function ReleaseSection() {
   const release = currentRelease;
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    window.addEventListener('ks-play-audio', handlePlay);
+    return () => {
+      window.removeEventListener('ks-play-audio', handlePlay);
+    };
+  }, []);
 
   const triggerPlay = () => {
     window.dispatchEvent(new CustomEvent('ks-play-audio'));
+    setIsPlaying(true);
   };
 
   return (
@@ -30,7 +44,7 @@ export function ReleaseSection() {
         {/* Content grid */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-16 lg:gap-24 items-start">
           {/* Artwork Frame */}
-          <div className="relative w-full aspect-square overflow-hidden bg-[var(--ks-surface)] border border-[var(--ks-border)] group">
+          <div className="relative w-full aspect-square overflow-hidden bg-[var(--ks-surface)] border border-[var(--ks-border)] group rounded-sm">
             {release.artwork ? (
               <>
                 <Image
@@ -68,10 +82,13 @@ export function ReleaseSection() {
           <div className="flex flex-col gap-8 md:pt-4">
             {/* Title & Type */}
             <div className="flex flex-col gap-3">
-              <span className="text-label capitalize" style={{ color: 'var(--ks-subtle)' }}>
-                {release.type === 'single' ? 'Single' : release.type === 'ep' ? 'EP' : 'Albüm'}
-                {release.releaseDate && <> &mdash; {release.releaseDate}</>}
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-label capitalize" style={{ color: 'var(--ks-subtle)' }}>
+                  {release.type === 'single' ? 'Single' : release.type === 'ep' ? 'EP' : 'Albüm'}
+                  {release.releaseDate && <> &mdash; {release.releaseDate}</>}
+                </span>
+                <AudioVisualizer isPlaying={isPlaying} barCount={12} variant="compact" />
+              </div>
               <h2
                 id="release-heading"
                 className="text-display-lg"

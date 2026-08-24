@@ -1,6 +1,12 @@
+'use client';
+
 import { currentRelease } from '@/data/releases';
 
 export function Hero() {
+  const triggerAudio = () => {
+    window.dispatchEvent(new CustomEvent('ks-play-audio'));
+  };
+
   return (
     <section
       aria-label="Kayıp Serotonin — Hero"
@@ -21,7 +27,7 @@ export function Hero() {
         {/* Top label row */}
         <div className="animate-fade-up delay-100 flex items-center gap-4 mb-12 md:mb-16">
           <span className="text-label" style={{ color: 'var(--ks-subtle)' }}>
-            Bağımsız Müzik Projesi
+            Yapay Zeka Müzik Projesi
           </span>
           <span className="text-label" style={{ color: 'var(--ks-subtle)' }}>
             —
@@ -75,9 +81,18 @@ export function Hero() {
             </span>
           </div>
 
-          {/* CTA Button */}
-          <div className="flex items-center">
-            {currentRelease.links.spotify ? (
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={triggerAudio}
+              className="ks-btn ks-btn-primary group focus-visible:outline-[var(--ks-accent)]"
+              aria-label="Önizlemeyi Başlat"
+            >
+              <span>▶ Önizleme Dinle</span>
+            </button>
+
+            {currentRelease.links.spotify && (
               <a
                 href={currentRelease.links.spotify}
                 target="_blank"
@@ -85,26 +100,12 @@ export function Hero() {
                 className="ks-btn ks-btn-outline group focus-visible:outline-[var(--ks-accent)]"
                 aria-label={`${currentRelease.title} — Spotify'da dinle (yeni sekmede açılır)`}
               >
-                <span>Dinle</span>
+                <span>Spotify</span>
                 <span
                   className="transition-transform duration-200 group-hover:translate-x-0.5"
                   aria-hidden="true"
                 >
                   ↗
-                </span>
-              </a>
-            ) : (
-              <a
-                href="#release"
-                className="ks-btn ks-btn-outline group focus-visible:outline-[var(--ks-accent)]"
-                aria-label="Platform linklerine git"
-              >
-                <span>Dinle</span>
-                <span
-                  className="transition-transform duration-200 group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                >
-                  →
                 </span>
               </a>
             )}
