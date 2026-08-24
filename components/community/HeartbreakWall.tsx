@@ -55,13 +55,21 @@ export function HeartbreakWall() {
     }
   }, []);
 
+  const sanitizeInput = (str: string) => {
+    return str
+      .replace(/[<>]/g, '') // Strip HTML brackets
+      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Strip control chars
+      .trim();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    const cleanText = sanitizeInput(inputText);
+    if (!cleanText || cleanText.length < 3) return;
 
     const newNote: Note = {
       id: Date.now().toString(),
-      text: inputText.trim(),
+      text: cleanText,
       timestamp: 'Az önce',
       author: `Anonim #${Math.floor(100 + Math.random() * 900)}`,
     };

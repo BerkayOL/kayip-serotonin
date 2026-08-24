@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { DM_Serif_Display, DM_Sans } from 'next/font/google';
 import './globals.css';
 import { SiteNav } from '@/components/layout/SiteNav';
@@ -19,6 +19,13 @@ const dmSans = DM_Sans({
   weight: ['300', '400', '500'],
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  themeColor: '#0d0b0b',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -42,6 +49,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
+    apple: '/images/logo.png',
   },
 };
 
