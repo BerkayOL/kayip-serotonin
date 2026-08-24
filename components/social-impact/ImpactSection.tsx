@@ -27,7 +27,7 @@ export function ImpactSection() {
           <div className="md:col-span-9 lg:col-span-8 flex flex-col gap-10">
             {/* Big number */}
             <div
-              className="flex items-baseline gap-5"
+              className="flex flex-wrap sm:flex-nowrap items-baseline gap-3 sm:gap-5"
               aria-label={`Net sanatçı gelirinin yüzde ${percentage}'si bağış`}
             >
               <span

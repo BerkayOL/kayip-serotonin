@@ -46,6 +46,7 @@ export function ReleaseLyrics() {
                 return (
                   <div
                     key={index}
+                    onClick={() => setActiveNoteIndex((prev) => (prev === index ? null : index))}
                     onMouseEnter={() => setActiveNoteIndex(index)}
                     onMouseLeave={() => setActiveNoteIndex(null)}
                     className="relative group p-4 -mx-4 rounded border border-transparent hover:border-[var(--ks-border)] hover:bg-[var(--ks-surface)] transition-all duration-200 cursor-pointer"

@@ -27,7 +27,7 @@ export function SiteFooter() {
       role="contentinfo"
       className="border-t border-[var(--ks-border)] mt-auto bg-[var(--ks-bg)]"
     >
-      <div className="ks-container py-12">
+      <div className="ks-container pt-12 pb-28 sm:pb-32">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           {/* Brand & Founders */}
           <div className="flex flex-col gap-3">
