@@ -48,7 +48,11 @@ export const metadata: Metadata = {
     description: siteMetadata.description,
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/images/logo.png', type: 'image/png' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    shortcut: '/images/logo.png',
     apple: '/images/logo.png',
   },
 };

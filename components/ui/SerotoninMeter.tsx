@@ -32,7 +32,7 @@ export function SerotoninMeter() {
     };
 
     updateMetrics();
-    const interval = setInterval(updateMetrics, 60000);
+    const interval = setInterval(updateMetrics, 1000);
     return () => clearInterval(interval);
   }, []);
 
