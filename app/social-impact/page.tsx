@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import { generatePageMetadata } from '@/lib/metadata';
 import { impactCampaign } from '@/data/social-impact';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { generatePageMetadata } from '@/lib/metadata';
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Sosyal Etki',
@@ -14,6 +14,7 @@ export default function SocialImpactPage() {
 
   return (
     <div className="pt-32 pb-24">
+      <JsonLd type="website" pagePath="/social-impact" pageTitle="Sosyal Etki" />
       {/* Page header */}
       <div className="ks-container mb-16 md:mb-24">
         <div className="flex flex-col gap-4 border-b border-[var(--ks-border)] pb-10">

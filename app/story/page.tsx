@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { artist } from '@/data/artist';
 import { currentRelease } from '@/data/releases';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { generatePageMetadata } from '@/lib/metadata';
 
 export const metadata: Metadata = generatePageMetadata({
@@ -15,6 +16,7 @@ export const metadata: Metadata = generatePageMetadata({
 export default function StoryPage() {
   return (
     <div className="pt-32 pb-24">
+      <JsonLd type="musicGroup" pagePath="/story" pageTitle="Hikaye" />
       {/* Page header */}
       <div className="ks-container mb-16 md:mb-24">
         <div className="flex flex-col gap-4 border-b border-[var(--ks-border)] pb-10">

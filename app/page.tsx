@@ -7,6 +7,7 @@ import { HeartbreakWall } from '@/components/community/HeartbreakWall';
 import { VisualArchive } from '@/components/releases/VisualArchive';
 import { ImpactSection } from '@/components/social-impact/ImpactSection';
 import { SocialFollow } from '@/components/social/SocialFollow';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { generatePageMetadata } from '@/lib/metadata';
 
 export const metadata: Metadata = generatePageMetadata({
@@ -18,6 +19,7 @@ export const metadata: Metadata = generatePageMetadata({
 export default function HomePage() {
   return (
     <>
+      <JsonLd type="musicRecording" />
       <Hero />
       <ReleaseSection />
       <ReleaseLyrics />

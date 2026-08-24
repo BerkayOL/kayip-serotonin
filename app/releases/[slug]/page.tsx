@@ -6,6 +6,7 @@ import { releases } from '@/data/releases';
 import { PlatformLinks } from '@/components/releases/PlatformLinks';
 import { ReleaseLyrics } from '@/components/releases/ReleaseLyrics';
 import { StoryCardModal } from '@/components/ui/StoryCardModal';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { generatePageMetadata } from '@/lib/metadata';
 
 interface Props {
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: release.description ?? `${release.title} — Kayıp Serotonin`,
     path: `/releases/${release.slug}`,
     ogImage: release.artwork ?? undefined,
+    type: 'music.song',
   });
 }
 
@@ -40,6 +42,11 @@ export default async function ReleasePage({ params }: Props) {
 
   return (
     <div className="pt-28 pb-24">
+      <JsonLd
+        type="musicRecording"
+        pagePath={`/releases/${release.slug}`}
+        pageTitle={release.title}
+      />
       {/* Back link & Actions */}
       <div className="ks-container mb-10 flex items-center justify-between">
         <Link
