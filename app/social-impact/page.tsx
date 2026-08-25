@@ -37,7 +37,7 @@ export default function SocialImpactPage() {
           {/* Left label */}
           <div className="md:col-span-3 lg:col-span-2">
             <span
-              className="text-label sticky top-32"
+              className="text-label md:sticky md:top-32"
               style={{ color: 'var(--ks-subtle)' }}
             >
               Taahhüt

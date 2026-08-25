@@ -1,42 +1,68 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
+
+interface MeterState {
+  time: string;
+  level: number;
+  status: string;
+}
+
+function computeMetrics(): MeterState {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+  let level: number;
+  let status: string;
+
+  if (hours >= 0 && hours < 6) {
+    level = 10 + Math.floor(hours * 2.5);
+    status = 'Karanlık / Melankoli';
+  } else if (hours >= 6 && hours < 12) {
+    level = 40 + Math.floor((hours - 6) * 4);
+    status = 'Uyanış / Sessizlik';
+  } else if (hours >= 12 && hours < 18) {
+    level = 65 - Math.floor((hours - 12) * 3);
+    status = 'Gün Işığı / Hatıralar';
+  } else {
+    level = 45 - Math.floor((hours - 18) * 5);
+    status = 'Akşam / İçe Dönüş';
+  }
+
+  return { time, level, status };
+}
+
+let cachedMetrics: MeterState = computeMetrics();
+let lastMinute = new Date().getMinutes();
+
+function subscribe(callback: () => void) {
+  const interval = setInterval(() => {
+    const currentMin = new Date().getMinutes();
+    if (currentMin !== lastMinute) {
+      lastMinute = currentMin;
+      cachedMetrics = computeMetrics();
+      callback();
+    }
+  }, 1000);
+  return () => clearInterval(interval);
+}
+
+function getSnapshot(): MeterState {
+  return cachedMetrics;
+}
+
+function getServerSnapshot(): null {
+  return null;
+}
 
 export function SerotoninMeter() {
-  const [time, setTime] = useState('');
-  const [level, setLevel] = useState(24);
-  const [status, setStatus] = useState('Gece Kuşağı');
+  const metrics = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  useEffect(() => {
-    const updateMetrics = () => {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const formatted = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-      setTime(formatted);
+  if (!metrics) return null;
 
-      // Creative serotonin level based on natural circadian & emotional night rhythms
-      if (hours >= 0 && hours < 6) {
-        setLevel(10 + Math.floor(hours * 2.5));
-        setStatus('Karanlık / Melankoli');
-      } else if (hours >= 6 && hours < 12) {
-        setLevel(40 + Math.floor((hours - 6) * 4));
-        setStatus('Uyanış / Sessizlik');
-      } else if (hours >= 12 && hours < 18) {
-        setLevel(65 - Math.floor((hours - 12) * 3));
-        setStatus('Gün Işığı / Hatıralar');
-      } else {
-        setLevel(45 - Math.floor((hours - 18) * 5));
-        setStatus('Akşam / İçe Dönüş');
-      }
-    };
-
-    updateMetrics();
-    const interval = setInterval(updateMetrics, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!time) return null;
+  const { time, level, status } = metrics;
 
   return (
     <div
@@ -55,3 +81,4 @@ export function SerotoninMeter() {
     </div>
   );
 }
+

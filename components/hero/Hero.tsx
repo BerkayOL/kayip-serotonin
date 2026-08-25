@@ -18,8 +18,12 @@ export function Hero() {
         aria-hidden="true"
       >
         <div
-          className="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full opacity-[0.14] blur-[120px] pointer-events-none"
-          style={{ background: 'var(--ks-accent)' }}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 65% 55% at 50% 0%, var(--ks-accent-muted) 0%, transparent 80%)',
+            opacity: 0.8,
+          }}
         />
         <div
           className="absolute top-0 bottom-0 left-[50%] w-px opacity-[0.035]"

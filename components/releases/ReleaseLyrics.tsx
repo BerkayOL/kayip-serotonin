@@ -49,7 +49,7 @@ export function ReleaseLyrics() {
                     onClick={() => setActiveNoteIndex((prev) => (prev === index ? null : index))}
                     onMouseEnter={() => setActiveNoteIndex(index)}
                     onMouseLeave={() => setActiveNoteIndex(null)}
-                    className="relative group p-4 -mx-4 rounded border border-transparent hover:border-[var(--ks-border)] hover:bg-[var(--ks-surface)] transition-all duration-200 cursor-pointer"
+                    className="relative group p-4 -mx-4 rounded border border-transparent hover:border-[var(--ks-border)] hover:bg-[var(--ks-surface)] transition-[background-color,border-color] duration-200 cursor-pointer"
                   >
                     <p
                       className="text-xl sm:text-2xl md:text-3xl leading-snug transition-colors duration-200 m-0"
@@ -65,7 +65,7 @@ export function ReleaseLyrics() {
                     {line.note && (
                       <div
                         className={[
-                          'overflow-hidden transition-all duration-300',
+                          'overflow-hidden transition-[max-height,opacity,margin] duration-300',
                           isHovered ? 'max-h-24 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0',
                         ].join(' ')}
                       >

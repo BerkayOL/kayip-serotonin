@@ -1,6 +1,6 @@
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
-    <div className="animate-page-enter gpu-layer flex-1 flex flex-col w-full">
+    <div className="flex-1 flex flex-col w-full">
       {children}
     </div>
   );

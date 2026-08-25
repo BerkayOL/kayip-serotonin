@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-
 interface AudioVisualizerProps {
   isPlaying: boolean;
   barCount?: number;
@@ -9,69 +7,45 @@ interface AudioVisualizerProps {
   variant?: 'compact' | 'expanded';
 }
 
+// CSS-animation-only visualizer — zero JS DOM writes during playback.
+// Each bar uses a unique animation-delay to create staggered wave effect.
+// animation-play-state is toggled via the data-playing attribute, which
+// is compositor-friendly (no layout, no paint).
 export function AudioVisualizer({
   isPlaying,
   barCount = 16,
   className = '',
   variant = 'compact',
 }: AudioVisualizerProps) {
-  const barsRef = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    if (!isPlaying) {
-      barsRef.current.forEach((bar) => {
-        if (!bar) return;
-        bar.style.height = '15%';
-        bar.style.opacity = '0.25';
-      });
-      return;
-    }
-
-    let animationFrameId: number;
-    let phase = 0;
-
-    const animate = () => {
-      phase += 0.08;
-
-      barsRef.current.forEach((bar, i) => {
-        if (!bar) return;
-        // Harmonic wave simulation representing 97 BPM trap bounce & acoustic harmonics
-        const wave1 = Math.sin(phase + i * 0.4) * 0.5 + 0.5;
-        const wave2 = Math.cos(phase * 1.5 + i * 0.7) * 0.3 + 0.3;
-        const noise = (Math.sin(phase * 3 + i * 1.2) + 1) * 0.2;
-        const heightPercent = Math.min(100, Math.max(15, (wave1 + wave2 + noise) * 60));
-        bar.style.height = `${heightPercent}%`;
-        bar.style.opacity = `${0.4 + (heightPercent / 100) * 0.6}`;
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPlaying, barCount]);
-
   const heightClass = variant === 'expanded' ? 'h-12' : 'h-5';
 
   return (
     <div
       className={`flex items-end gap-[3px] select-none ${heightClass} ${className}`}
       aria-hidden="true"
+      data-playing={isPlaying ? 'true' : 'false'}
     >
-      {Array.from({ length: barCount }).map((_, i) => (
-        <div
-          key={i}
-          ref={(el) => {
-            if (el) barsRef.current[i] = el;
-          }}
-          className="w-[3px] rounded-full transition-all duration-75"
-          style={{
-            height: '15%',
-            backgroundColor: i % 3 === 0 ? 'var(--ks-accent)' : 'var(--ks-fg)',
-            opacity: 0.3,
-          }}
-        />
-      ))}
+      {Array.from({ length: barCount }).map((_, i) => {
+        // Stagger delay creates wave-like motion across bars.
+        // Delay range: 0ms – 700ms, distributed across barCount.
+        const delayMs = Math.round((i / Math.max(barCount - 1, 1)) * 700);
+        // Duration varies slightly per bar for organic feel.
+        const durationMs = 600 + (i % 4) * 80;
+        const isAccent = i % 3 === 0;
+
+        return (
+          <div
+            key={i}
+            className="ks-viz-bar w-[3px] rounded-full"
+            style={{
+              backgroundColor: isAccent ? 'var(--ks-accent)' : 'var(--ks-fg)',
+              animationDelay: `${delayMs}ms`,
+              animationDuration: `${durationMs}ms`,
+              animationPlayState: isPlaying ? 'running' : 'paused',
+            }}
+          />
+        );
+      })}
     </div>
   );
 }

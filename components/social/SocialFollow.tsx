@@ -58,7 +58,7 @@ export function SocialFollow() {
                 <ExternalLink
                   href={href}
                   aria-label={`${label}'da takip et (yeni sekmede açılır)`}
-                  className="w-full flex flex-col justify-between gap-10 p-8 border border-[var(--ks-border)] bg-[var(--ks-surface)] hover:border-[var(--ks-accent)] hover:bg-[var(--ks-surface-raised)] transition-all duration-300 focus-visible:outline-[var(--ks-accent)] rounded-none group"
+                  className="w-full flex flex-col justify-between gap-10 p-8 border border-[var(--ks-border)] bg-[var(--ks-surface)] hover:border-[var(--ks-accent)] hover:bg-[var(--ks-surface-raised)] transition-[border-color,background-color] duration-300 focus-visible:outline-[var(--ks-accent)] rounded-none group"
                 >
                   <span
                     className="text-label group-hover:text-[var(--ks-fg)] transition-colors duration-200"
@@ -77,7 +77,7 @@ export function SocialFollow() {
                       {label}
                     </span>
                     <span
-                      className="text-xl opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200"
+                      className="text-xl opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-[opacity,transform] duration-200"
                       style={{ color: 'var(--ks-fg)' }}
                       aria-hidden="true"
                     >

@@ -16,25 +16,7 @@ const navLinks = [
 
 export function SiteNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
 
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.scrollY > 20;
-          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close menu on Escape
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -44,30 +26,21 @@ export function SiteNav() {
     return () => document.removeEventListener('keydown', handleKey);
   }, [isOpen]);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   return (
     <>
       <header
         role="banner"
-        className={[
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          isScrolled
-            ? 'bg-[var(--ks-bg)]/92 backdrop-blur-md shadow-lg shadow-black/50'
-            : 'bg-transparent',
-        ].join(' ')}
+        className="fixed top-0 left-0 right-0 z-50 bg-[var(--ks-bg)] border-b border-[var(--ks-border)]"
       >
         <nav
           aria-label="Ana navigasyon"
           className="ks-container flex items-center justify-between h-16"
         >
-          {/* Wordmark + Logo */}
           <Link
             href="/"
             className="flex items-center gap-3 group focus-visible:outline-[var(--ks-accent)]"
@@ -82,23 +55,22 @@ export function SiteNav() {
               priority
             />
             <span
-              className="font-display text-[var(--ks-fg)] text-base tracking-wide leading-none"
-              style={{ fontFamily: 'var(--ks-font-display)' }}
+              className="text-base tracking-wide leading-none"
+              style={{ color: 'var(--ks-fg)', fontFamily: 'var(--ks-font-display)' }}
             >
               Kayıp Serotonin
             </span>
           </Link>
 
-          {/* Right side: Serotonin meter + Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             <SerotoninMeter />
-
             <ul className="flex items-center gap-6 list-none m-0 p-0">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-label text-[var(--ks-muted)] hover:text-[var(--ks-fg)] transition-colors duration-200 focus-visible:outline-[var(--ks-accent)]"
+                    className="text-label hover:text-[var(--ks-fg)] transition-colors duration-200 focus-visible:outline-[var(--ks-accent)]"
+                    style={{ color: 'var(--ks-muted)' }}
                   >
                     {link.label}
                   </Link>
@@ -107,7 +79,6 @@ export function SiteNav() {
             </ul>
           </div>
 
-          {/* Mobile hamburger */}
           <button
             type="button"
             aria-label={isOpen ? 'Menüyü kapat' : 'Menüyü aç'}
@@ -116,37 +87,28 @@ export function SiteNav() {
             onClick={() => setIsOpen((v) => !v)}
             className="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-[6px] cursor-pointer focus-visible:outline-[var(--ks-accent)]"
           >
-            <span
-              className={[
-                'block w-6 h-px bg-[var(--ks-fg)] transition-all duration-300',
-                isOpen ? 'translate-y-[7px] rotate-45' : '',
-              ].join(' ')}
-            />
-            <span
-              className={[
-                'block w-6 h-px bg-[var(--ks-fg)] transition-all duration-300',
-                isOpen ? 'opacity-0 scale-x-0' : '',
-              ].join(' ')}
-            />
-            <span
-              className={[
-                'block w-6 h-px bg-[var(--ks-fg)] transition-all duration-300',
-                isOpen ? '-translate-y-[7px] -rotate-45' : '',
-              ].join(' ')}
-            />
+            <span className={['block w-6 h-px bg-[var(--ks-fg)] transition-transform duration-300', isOpen ? 'translate-y-[7px] rotate-45' : ''].join(' ')} />
+            <span className={['block w-6 h-px bg-[var(--ks-fg)] transition-opacity duration-300', isOpen ? 'opacity-0' : ''].join(' ')} />
+            <span className={['block w-6 h-px bg-[var(--ks-fg)] transition-transform duration-300', isOpen ? '-translate-y-[7px] -rotate-45' : ''].join(' ')} />
           </button>
         </nav>
       </header>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu overlay
+          P4 Fix: visibility:hidden when closed removes the fixed inset-0 element
+          from the compositor active layer list. opacity-0 alone keeps the layer
+          alive. visibility:hidden lets the browser discard the compositing layer.
+          Screen readers correctly handle visibility:hidden on aria-modal dialogs. */}
       <div
         id="mobile-menu"
         role="dialog"
         aria-label="Navigasyon menüsü"
         aria-modal="true"
         className={[
-          'fixed inset-0 z-40 bg-[var(--ks-bg)] flex flex-col justify-center transition-all duration-300',
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
+          'fixed inset-0 z-40 bg-[var(--ks-bg)] flex flex-col justify-center transition-[opacity,visibility] duration-300',
+          isOpen
+            ? 'opacity-100 visible pointer-events-auto'
+            : 'opacity-0 invisible pointer-events-none',
         ].join(' ')}
       >
         <nav className="ks-container">
@@ -156,11 +118,12 @@ export function SiteNav() {
                 <Link
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-display-md text-[var(--ks-fg)] hover:text-[var(--ks-accent)] transition-colors duration-200 focus-visible:outline-[var(--ks-accent)]"
+                  className="text-display-md hover:text-[var(--ks-accent)] transition-colors duration-200 focus-visible:outline-[var(--ks-accent)]"
                   style={{
-                    transitionDelay: isOpen ? `${i * 60}ms` : '0ms',
+                    color: 'var(--ks-fg)',
                     opacity: isOpen ? 1 : 0,
                     transform: isOpen ? 'translateY(0)' : 'translateY(1rem)',
+                    transition: `opacity 200ms ease ${i * 60}ms, transform 200ms ease ${i * 60}ms`,
                   }}
                 >
                   {link.label}
